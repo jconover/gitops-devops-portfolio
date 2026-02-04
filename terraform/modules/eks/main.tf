@@ -1,5 +1,12 @@
 locals {
   cluster_name = coalesce(var.cluster_name, "${var.name}-eks")
+  node_group_defaults = merge(
+    {
+      ami_type = "AL2_x86_64"
+      disk_size = 50
+    },
+    var.managed_node_group_defaults,
+  )
 }
 
 module "eks" {
@@ -11,6 +18,7 @@ module "eks" {
   vpc_id          = var.vpc_id
 
   eks_managed_node_groups = var.managed_node_groups
+  eks_managed_node_group_defaults = local.node_group_defaults
   tags                    = var.tags
 }
 

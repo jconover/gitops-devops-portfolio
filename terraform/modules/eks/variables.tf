@@ -31,6 +31,12 @@ variable "managed_node_groups" {
   default     = {}
 }
 
+variable "managed_node_group_defaults" {
+  description = "Defaults applied to all managed node groups"
+  type        = map(any)
+  default     = {}
+}
+
 variable "tags" {
   description = "Common tags"
   type        = map(string)

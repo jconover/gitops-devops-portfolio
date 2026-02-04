@@ -38,7 +38,20 @@ module "eks" {
   name                  = "dev"
   vpc_id                = module.vpc.vpc_id
   subnet_ids            = module.vpc.private_subnet_ids
-  managed_node_groups   = {}
+  managed_node_group_defaults = {
+    additional_security_groups = [module.vpc.eks_node_security_group_id]
+  }
+  managed_node_groups = {
+    primary = {
+      desired_size   = 2
+      min_size       = 2
+      max_size       = 4
+      instance_types = ["t3.large"]
+      labels = {
+        role = "app"
+      }
+    }
+  }
   tags = {
     environment = "dev"
     project     = "gitops-control-plane"
