@@ -18,7 +18,7 @@ Each environment under `terraform/environments/<env>` consumes the modules via `
 - `module.vpc.private_subnet_ids`: Feed into EKS, databases, or internal services.
 - `module.vpc.eks_node_security_group_id`: Apply to worker nodes or other compute requiring same policies.
 - `module.eks.cluster_name`, `module.eks.kubeconfig`: Cluster identifiers and API endpoint (sensitive) for CI/CD wiring.
-- `module.jenkins.public_ip` / `module.argocd_host.public_ip`: External IP addresses for the automation hosts (also exported at the environment level for convenience).
+- `module.jenkins.public_ip`, `module.argocd_host.public_ip`, `module.awx_host.public_ip`, `module.puppet_server.public_ip`: External IP addresses for the automation hosts (also exported at the environment level for convenience).
 
 ## Usage
 

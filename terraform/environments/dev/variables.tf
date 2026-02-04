@@ -103,3 +103,27 @@ variable "argocd_ui_cidrs" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
+
+variable "awx_instance_type" {
+  description = "Instance type for AWX host"
+  type        = string
+  default     = "t3.large"
+}
+
+variable "awx_ui_cidrs" {
+  description = "Allowed CIDRs for AWX UI"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "puppet_instance_type" {
+  description = "Instance type for Puppet server"
+  type        = string
+  default     = "t3.large"
+}
+
+variable "puppet_agent_cidrs" {
+  description = "CIDRs allowed to connect as Puppet agents"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}

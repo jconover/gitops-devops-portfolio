@@ -37,6 +37,8 @@ data "aws_ami" "ubuntu" {
 locals {
   jenkins_ami = coalesce(var.jenkins_ami_id, data.aws_ami.ubuntu.id)
   argocd_ami  = coalesce(var.argocd_ami_id, data.aws_ami.ubuntu.id)
+  awx_ami     = data.aws_ami.ubuntu.id
+  puppet_ami  = data.aws_ami.ubuntu.id
 }
 
 module "vpc" {
@@ -92,10 +94,44 @@ module "argocd_host" {
   tags       = local.tags
 }
 
+module "awx_host" {
+  source     = "../../modules/awx_host"
+  name       = var.name
+  ami_id     = local.awx_ami
+  instance_type = var.awx_instance_type
+  subnet_id  = module.vpc.public_subnet_ids[0]
+  vpc_id     = module.vpc.vpc_id
+  key_name   = var.key_name
+  allowed_ssh_cidrs  = var.admin_cidr_blocks
+  allowed_http_cidrs = var.awx_ui_cidrs
+  tags       = local.tags
+}
+
+module "puppet_server" {
+  source     = "../../modules/puppet_server"
+  name       = var.name
+  ami_id     = local.puppet_ami
+  instance_type = var.puppet_instance_type
+  subnet_id  = module.vpc.public_subnet_ids[1]
+  vpc_id     = module.vpc.vpc_id
+  key_name   = var.key_name
+  allowed_ssh_cidrs   = var.admin_cidr_blocks
+  allowed_agent_cidrs = var.puppet_agent_cidrs
+  tags       = local.tags
+}
+
 output "jenkins_public_ip" {
   value = module.jenkins.public_ip
 }
 
 output "argocd_public_ip" {
   value = module.argocd_host.public_ip
+}
+
+output "awx_public_ip" {
+  value = module.awx_host.public_ip
+}
+
+output "puppet_public_ip" {
+  value = module.puppet_server.public_ip
 }

@@ -62,6 +62,8 @@ After it exists, each environment configuration (e.g., `terraform/environments/d
 
 See `docs/terraform.md` for a breakdown of module inputs/outputs and environment usage. Copy the `terraform.tfvars.example` files under each environment directory to `terraform.tfvars` and tailor values (CIDRs, AZs, node groups) before running `terraform apply`.
 
+Automation hosts (Jenkins, Argo CD, AWX, Puppet) are provisioned through Terraform as EC2 instances. Their public IPs are exposed via outputs so Ansible, Puppet agents, and other tooling can target them without manual lookup.
+
 ## Roadmap
 
 1. **Infrastructure bootstrap**: Define Terraform root module, set up remote state backend, and provision shared AWS resources.
