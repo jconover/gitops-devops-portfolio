@@ -34,7 +34,9 @@ variable "managed_node_groups" {
 variable "managed_node_group_defaults" {
   description = "Defaults applied to all managed node groups"
   type        = map(any)
-  default     = {}
+  default     = {
+    ami_type = "BOTTLEROCKET_x86_64"
+  }
 }
 
 variable "tags" {

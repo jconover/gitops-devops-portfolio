@@ -2,7 +2,7 @@ locals {
   cluster_name = coalesce(var.cluster_name, "${var.name}-eks")
   node_group_defaults = merge(
     {
-      ami_type = "AL2_x86_64"
+      ami_type  = "BOTTLEROCKET_x86_64"
       disk_size = 50
     },
     var.managed_node_group_defaults,
