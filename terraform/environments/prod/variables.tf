@@ -55,3 +55,49 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "key_name" {
+  description = "SSH key name"
+  type        = string
+  default     = null
+}
+
+variable "admin_cidr_blocks" {
+  description = "CIDRs allowed administrative access"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "jenkins_ami_id" {
+  description = "AMI for Jenkins host"
+  type        = string
+}
+
+variable "jenkins_instance_type" {
+  description = "Instance type for Jenkins"
+  type        = string
+  default     = "t3.large"
+}
+
+variable "jenkins_ui_cidrs" {
+  description = "Allowed CIDRs for Jenkins UI"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
+variable "argocd_ami_id" {
+  description = "AMI for Argo host"
+  type        = string
+}
+
+variable "argocd_instance_type" {
+  description = "Instance type for Argo host"
+  type        = string
+  default     = "t3.medium"
+}
+
+variable "argocd_ui_cidrs" {
+  description = "Allowed CIDRs for Argo UI"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}

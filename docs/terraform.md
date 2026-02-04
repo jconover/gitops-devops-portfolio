@@ -4,7 +4,8 @@
 
 - `terraform/modules/vpc`: Provisions VPC, public/private subnets, NAT gateways, route tables, and exports subnet IDs plus the EKS node security group.
 - `terraform/modules/eks`: Thin wrapper around the official EKS module with opinionated defaults and managed node group settings.
-- `terraform/modules/jenkins`: Creates a Jenkins EC2 instance with customizable AMI, SGs, and bootstrap data.
+- `terraform/modules/jenkins`: Creates a Jenkins EC2 instance with dedicated security group, user-data bootstrap, and outputs for public/private IPs.
+- `terraform/modules/argocd_host`: Stands up a lightweight VM that can host the Argo CD CLI/UI and GitOps tooling.
 - `terraform/bootstrap`: Stands up the remote-state S3 bucket and DynamoDB lock table.
 
 ## Environment Inputs
@@ -17,7 +18,7 @@ Each environment under `terraform/environments/<env>` consumes the modules via `
 - `module.vpc.private_subnet_ids`: Feed into EKS, databases, or internal services.
 - `module.vpc.eks_node_security_group_id`: Apply to worker nodes or other compute requiring same policies.
 - `module.eks.cluster_name`, `module.eks.kubeconfig`: Cluster identifiers and API endpoint (sensitive) for CI/CD wiring.
-- `module.jenkins.public_ip`: Exposed when the Jenkins module is used to retrieve controller IP.
+- `module.jenkins.public_ip` / `module.argocd_host.public_ip`: External IP addresses for the automation hosts (also exported at the environment level for convenience).
 
 ## Usage
 

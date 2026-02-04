@@ -45,3 +45,37 @@ module "eks" {
   managed_node_groups = var.managed_node_groups
   tags                = local.tags
 }
+
+module "jenkins" {
+  source     = "../../modules/jenkins"
+  name       = var.name
+  ami_id     = var.jenkins_ami_id
+  instance_type = var.jenkins_instance_type
+  subnet_id  = module.vpc.public_subnet_ids[0]
+  vpc_id     = module.vpc.vpc_id
+  key_name   = var.key_name
+  allowed_ssh_cidrs  = var.admin_cidr_blocks
+  allowed_http_cidrs = var.jenkins_ui_cidrs
+  tags       = local.tags
+}
+
+module "argocd_host" {
+  source     = "../../modules/argocd_host"
+  name       = var.name
+  ami_id     = var.argocd_ami_id
+  instance_type = var.argocd_instance_type
+  subnet_id  = module.vpc.public_subnet_ids[1]
+  vpc_id     = module.vpc.vpc_id
+  key_name   = var.key_name
+  allowed_ssh_cidrs  = var.admin_cidr_blocks
+  allowed_http_cidrs = var.argocd_ui_cidrs
+  tags       = local.tags
+}
+
+output "jenkins_public_ip" {
+  value = module.jenkins.public_ip
+}
+
+output "argocd_public_ip" {
+  value = module.argocd_host.public_ip
+}

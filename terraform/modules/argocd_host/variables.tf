@@ -4,40 +4,34 @@ variable "name" {
 }
 
 variable "ami_id" {
-  description = "AMI ID for Jenkins host"
+  description = "AMI ID for Argo CD host"
   type        = string
 }
 
 variable "instance_type" {
-  description = "EC2 instance type"
+  description = "Instance type"
   type        = string
-  default     = "t3.large"
+  default     = "t3.medium"
 }
 
 variable "subnet_id" {
-  description = "Subnet for Jenkins host"
+  description = "Subnet ID"
   type        = string
 }
 
 variable "vpc_id" {
-  description = "VPC identifier"
+  description = "VPC ID"
   type        = string
 }
 
-variable "security_group_ids" {
-  description = "Additional security groups applied to the instance"
-  type        = list(string)
-  default     = []
-}
-
 variable "allowed_ssh_cidrs" {
-  description = "CIDR blocks allowed to access SSH"
+  description = "CIDR blocks allowed SSH access"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
 variable "allowed_http_cidrs" {
-  description = "CIDR blocks allowed to access Jenkins UI"
+  description = "CIDR blocks allowed Argo CD UI"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
