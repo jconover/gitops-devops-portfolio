@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "gitops-devops-portfolio-tfstate"
+    key            = "envs/dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "gitops-devops-portfolio-locks"
+    encrypt        = true
+  }
+}
+
 module "vpc" {
   source     = "../../modules/vpc"
   name       = "dev"

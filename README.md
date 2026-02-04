@@ -45,6 +45,19 @@ gitops-devops-portfolio/
     └── apps/
 ```
 
+## State Backend Bootstrap
+
+Run the `terraform/bootstrap` module once to provision a remote state S3 bucket and DynamoDB lock table:
+
+```bash
+cd terraform/bootstrap
+terraform init
+terraform apply -var="bucket_name=gitops-devops-portfolio-tfstate" \
+  -var="dynamodb_table_name=gitops-devops-portfolio-locks"
+```
+
+After it exists, each environment configuration (e.g., `terraform/environments/dev`) uses the S3 backend block defined at the top of its `main.tf`. Adjust the bucket/key/table names if you deploy multiple copies of the project.
+
 ## Roadmap
 
 1. **Infrastructure bootstrap**: Define Terraform root module, set up remote state backend, and provision shared AWS resources.
