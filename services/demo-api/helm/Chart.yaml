@@ -1,0 +1,5 @@
+apiVersion: v2
+name: demo-api
+version: 0.1.0
+appVersion: "0.1.0"
+description: Demo API service for the GitOps control plane project.

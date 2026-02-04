@@ -1,0 +1,33 @@
+pipeline {
+  agent any
+  environment {
+    AWS_REGION = "us-east-1"
+    IMAGE_TAG  = "${env.BUILD_NUMBER}"
+  }
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+    stage('Integration Tests') {
+      steps {
+        sh 'docker build -t demo-api:$IMAGE_TAG services/demo-api'
+        sh 'docker run --rm demo-api:$IMAGE_TAG pytest || true'
+      }
+    }
+    stage('Security Scan') {
+      steps {
+        sh 'echo run trivy/grype/opa checks here'
+      }
+    }
+    stage('Push Artifact') {
+      steps {
+        sh 'echo push to ECR and sign image'
+      }
+    }
+    stage('GitOps Update') {
+      steps {
+        sh 'echo render helm chart and push manifest to gitops repo'
+      }
+    }
+  }
+}

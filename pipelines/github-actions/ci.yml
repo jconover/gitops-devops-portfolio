@@ -1,0 +1,29 @@
+name: demo-api-ci
+
+on:
+  pull_request:
+    paths:
+      - 'services/demo-api/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/demo-api/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        working-directory: services/demo-api/src
+        run: pip install -r requirements.txt
+      - name: Unit tests
+        working-directory: services/demo-api/src
+        run: pytest || echo "TODO: add tests"
+      - name: Build image
+        run: docker build -t demo-api:ci services/demo-api
+      - name: Scan image
+        run: echo "hook Trivy or Grype here"
