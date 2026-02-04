@@ -1,0 +1,4 @@
+plugin: community.general.terraform
+project_path: ../../terraform/environments/dev
+workspace: default
+strict: false

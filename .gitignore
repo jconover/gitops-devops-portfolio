@@ -5,3 +5,4 @@
 # Local variable files
 terraform.tfvars
 *.auto.tfvars
+ansible/inventories/dev.ini
