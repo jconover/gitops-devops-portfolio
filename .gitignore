@@ -1,0 +1,7 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Local variable files
+terraform.tfvars
+*.auto.tfvars
