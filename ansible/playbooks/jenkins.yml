@@ -2,8 +2,32 @@
 - name: Configure Jenkins controller
   hosts: jenkins
   become: true
-  vars:
-    jenkins_version: "2.452"
+  vars_files:
+    - ../group_vars/jenkins.yml
+  pre_tasks:
+    - name: Ensure apt cache is updated (Debian/Ubuntu)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_os_family == "Debian"
   roles:
-    - { role: geerlingguy.java }
-    - { role: geerlingguy.jenkins }
+    - role: geerlingguy.java
+      vars:
+        java_packages:
+          - openjdk-11-jdk
+    - role: geerlingguy.jenkins
+      vars:
+        jenkins_plugins: "{{ jenkins_plugins }}"
+        jenkins_version: "{{ jenkins_version }}"
+        jenkins_admin_username: "{{ jenkins_admin_username }}"
+        jenkins_admin_password: "{{ jenkins_admin_password }}"
+  tasks:
+    - name: Apply Jenkins Configuration as Code bundle
+      ansible.builtin.template:
+        src: templates/jenkins-jcasc.yaml.j2
+        dest: /var/lib/jenkins/jenkins.yaml
+        owner: jenkins
+        mode: '0644'
+    - name: Restart Jenkins after configuration
+      ansible.builtin.service:
+        name: jenkins
+        state: restarted

@@ -1,0 +1,9 @@
+jenkins_version: "2.452"
+jenkins_plugins:
+  - workflow-aggregator
+  - configuration-as-code
+  - blueocean
+  - kubernetes
+jenkins_admin_username: admin
+jenkins_admin_password: changeme
+jenkins_java_options: "-Djenkins.install.runSetupWizard=false"

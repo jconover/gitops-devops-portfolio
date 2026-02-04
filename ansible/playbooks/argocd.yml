@@ -1,0 +1,19 @@
+---
+- name: Configure Argo CD control plane
+  hosts: argo
+  become: true
+  vars:
+    argo_version: "2.11.0"
+  roles:
+    - role: community.kubernetes
+  tasks:
+    - name: Install argocd cli
+      ansible.builtin.get_url:
+        url: "https://github.com/argoproj/argo-cd/releases/download/v{{ argo_version }}/argocd-linux-amd64"
+        dest: /usr/local/bin/argocd
+        mode: '0755'
+    - name: Template argocd kubeconfig
+      ansible.builtin.template:
+        src: templates/argocd-kubeconfig.j2
+        dest: /etc/argocd/kubeconfig
+        mode: '0600'
