@@ -22,9 +22,11 @@ managed_node_groups = {
 }
 key_name             = "my-keypair"
 admin_cidr_blocks    = ["203.0.113.0/24"]
-jenkins_ami_id       = "ami-0123456789abcdef0"
 jenkins_instance_type = "t3.large"
 jenkins_ui_cidrs     = ["203.0.113.0/24"]
-argocd_ami_id        = "ami-0123456789abcdef0"
 argocd_instance_type = "t3.medium"
 argocd_ui_cidrs      = ["203.0.113.0/24"]
+
+# Optional AMI overrides (defaults to latest Ubuntu 24.04 from Canonical)
+# jenkins_ami_id = "ami-xxxxxxxx"
+# argocd_ami_id  = "ami-xxxxxxxx"

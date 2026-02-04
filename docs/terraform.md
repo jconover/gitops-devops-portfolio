@@ -4,8 +4,8 @@
 
 - `terraform/modules/vpc`: Provisions VPC, public/private subnets, NAT gateways, route tables, and exports subnet IDs plus the EKS node security group.
 - `terraform/modules/eks`: Thin wrapper around the official EKS module with opinionated defaults and managed node group settings.
-- `terraform/modules/jenkins`: Creates a Jenkins EC2 instance with dedicated security group, user-data bootstrap, and outputs for public/private IPs.
-- `terraform/modules/argocd_host`: Stands up a lightweight VM that can host the Argo CD CLI/UI and GitOps tooling.
+- `terraform/modules/jenkins`: Creates a Jenkins EC2 instance with dedicated security group, user-data bootstrap, and outputs for public/private IPs (defaults to the latest Canonical Ubuntu 24.04 AMI unless overridden).
+- `terraform/modules/argocd_host`: Stands up a lightweight VM that can host the Argo CD CLI/UI and GitOps tooling (also defaults to Ubuntu 24.04).
 - `terraform/bootstrap`: Stands up the remote-state S3 bucket and DynamoDB lock table.
 
 ## Environment Inputs

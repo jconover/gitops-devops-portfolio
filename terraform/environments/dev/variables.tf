@@ -69,8 +69,9 @@ variable "admin_cidr_blocks" {
 }
 
 variable "jenkins_ami_id" {
-  description = "AMI for Jenkins host"
+  description = "Override AMI for Jenkins host (defaults to latest Ubuntu 24.04)"
   type        = string
+  default     = null
 }
 
 variable "jenkins_instance_type" {
@@ -86,8 +87,9 @@ variable "jenkins_ui_cidrs" {
 }
 
 variable "argocd_ami_id" {
-  description = "AMI for Argo host"
+  description = "Override AMI for Argo host (defaults to latest Ubuntu 24.04)"
   type        = string
+  default     = null
 }
 
 variable "argocd_instance_type" {

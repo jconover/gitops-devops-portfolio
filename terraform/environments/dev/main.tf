@@ -19,6 +19,26 @@ locals {
   }, var.tags)
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+locals {
+  jenkins_ami = coalesce(var.jenkins_ami_id, data.aws_ami.ubuntu.id)
+  argocd_ami  = coalesce(var.argocd_ami_id, data.aws_ami.ubuntu.id)
+}
+
 module "vpc" {
   source     = "../../modules/vpc"
   name       = var.name
@@ -49,7 +69,7 @@ module "eks" {
 module "jenkins" {
   source     = "../../modules/jenkins"
   name       = var.name
-  ami_id     = var.jenkins_ami_id
+  ami_id     = local.jenkins_ami
   instance_type = var.jenkins_instance_type
   subnet_id  = module.vpc.public_subnet_ids[0]
   vpc_id     = module.vpc.vpc_id
@@ -62,7 +82,7 @@ module "jenkins" {
 module "argocd_host" {
   source     = "../../modules/argocd_host"
   name       = var.name
-  ami_id     = var.argocd_ami_id
+  ami_id     = local.argocd_ami
   instance_type = var.argocd_instance_type
   subnet_id  = module.vpc.public_subnet_ids[1]
   vpc_id     = module.vpc.vpc_id
