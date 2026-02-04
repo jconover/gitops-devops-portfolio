@@ -38,14 +38,14 @@ Outputs will include VPC IDs, EKS details, and automation host public IPs (Jenki
 
 ## 4. Configure Automation Hosts via Ansible
 
-Use the Terraform dynamic inventory:
+Use the Terraform dynamic inventory (local `ansible/ansible.cfg` points to it):
 
 ```bash
 cd ../../..
 cd ansible
 ansible-galaxy install -r requirements.yml
-ansible-playbook -i inventories/terraform.yml playbooks/jenkins.yml
-ansible-playbook -i inventories/terraform.yml playbooks/argocd.yml
+ansible-playbook playbooks/jenkins.yml
+ansible-playbook playbooks/argocd.yml
 # TODO: add AWX/Puppet playbooks or roles as needed
 ```
 

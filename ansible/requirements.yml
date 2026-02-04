@@ -3,3 +3,4 @@ roles:
   - src: geerlingguy.jenkins
 collections:
   - name: community.kubernetes
+  - name: community.general

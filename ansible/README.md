@@ -16,7 +16,7 @@ Inventory defaults live in `inventories/`, with additional group vars stored und
 
 ### Dynamic Inventory via Terraform
 
-The repository includes `inventories/terraform.yml`, which uses the `community.general.terraform` inventory plugin to read host data directly from the Terraform state in `terraform/environments/dev`. After running `terraform apply`, execute Ansible commands like:
+The repository includes `inventories/terraform.yml`, which uses the `community.general.terraform` inventory plugin to read host data directly from the Terraform state in `terraform/environments/dev`. The local `ansible.cfg` enables the plugin and sets the inventory path so you can simply run commands from this directory. After running `terraform apply`, execute:
 
 ```bash
 ansible-galaxy install -r requirements.yml
