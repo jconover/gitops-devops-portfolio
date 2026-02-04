@@ -13,7 +13,7 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  max_subnet_count = max(length(var.public_subnet_cidrs), 1)
+  max_subnet_count = max(length(var.public_subnet_cidrs), length(var.private_subnet_cidrs), 1)
 
   azs = length(var.availability_zones) > 0 ? var.availability_zones : slice(
     data.aws_availability_zones.available.names,
@@ -23,6 +23,14 @@ locals {
 
   public_subnets = {
     for idx, cidr in var.public_subnet_cidrs :
+    idx => {
+      cidr = cidr
+      az   = element(local.azs, idx)
+    }
+  }
+
+  private_subnets = {
+    for idx, cidr in var.private_subnet_cidrs :
     idx => {
       cidr = cidr
       az   = element(local.azs, idx)
@@ -63,6 +71,19 @@ resource "aws_subnet" "public" {
   })
 }
 
+resource "aws_subnet" "private" {
+  for_each = local.private_subnets
+
+  vpc_id            = aws_vpc.this.id
+  cidr_block        = each.value.cidr
+  availability_zone = each.value.az
+
+  tags = merge(var.tags, {
+    Name                              = "${var.name}-private-${each.key}"
+    "kubernetes.io/role/internal-elb" = "1"
+  })
+}
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
@@ -81,6 +102,52 @@ resource "aws_route_table_association" "public" {
   for_each       = aws_subnet.public
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
+}
+
+resource "aws_eip" "nat" {
+  for_each = aws_subnet.public
+
+  domain = "vpc"
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-nat-eip-${each.key}"
+  })
+}
+
+resource "aws_nat_gateway" "this" {
+  for_each = aws_subnet.public
+
+  allocation_id = aws_eip.nat[each.key].id
+  subnet_id     = each.value.id
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-nat-${each.key}"
+  })
+
+  depends_on = [aws_internet_gateway.this]
+}
+
+resource "aws_route_table" "private" {
+  for_each = aws_subnet.private
+
+  vpc_id = aws_vpc.this.id
+
+  tags = merge(var.tags, {
+    Name = "${var.name}-private-rt-${each.key}"
+  })
+}
+
+resource "aws_route" "private_outbound" {
+  for_each               = aws_route_table.private
+  route_table_id         = each.value.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.this[each.key].id
+}
+
+resource "aws_route_table_association" "private" {
+  for_each       = aws_subnet.private
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private[each.key].id
 }
 
 resource "aws_security_group" "eks_nodes" {
@@ -115,6 +182,11 @@ output "vpc_id" {
 output "public_subnet_ids" {
   description = "List of public subnet IDs"
   value       = [for subnet in aws_subnet.public : subnet.id]
+}
+
+output "private_subnet_ids" {
+  description = "List of private subnet IDs"
+  value       = [for subnet in aws_subnet.private : subnet.id]
 }
 
 output "eks_node_security_group_id" {
