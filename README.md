@@ -64,6 +64,10 @@ See `docs/terraform.md` for a breakdown of module inputs/outputs and environment
 
 Automation hosts (Jenkins, Argo CD, AWX, Puppet) are provisioned through Terraform as EC2 instances. Their public IPs are exposed via outputs so Ansible, Puppet agents, and other tooling can target them without manual lookup.
 
+## End-to-End Instructions
+
+For a step-by-step workflow (bootstrap state, run Terraform, configure automation hosts, deploy workloads), see `docs/instructions.md`.
+
 ## Roadmap
 
 1. **Infrastructure bootstrap**: Define Terraform root module, set up remote state backend, and provision shared AWS resources.
