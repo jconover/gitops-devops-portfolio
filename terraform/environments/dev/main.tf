@@ -8,52 +8,40 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = var.region
+}
+
+locals {
+  tags = merge({
+    environment = var.name
+    project     = "gitops-control-plane"
+  }, var.tags)
+}
+
 module "vpc" {
   source     = "../../modules/vpc"
-  name       = "dev"
-  cidr_block = "10.10.0.0/16"
-  public_subnet_cidrs = [
-    "10.10.1.0/24",
-    "10.10.2.0/24",
-  ]
-  private_subnet_cidrs = [
-    "10.10.11.0/24",
-    "10.10.12.0/24",
-  ]
-  availability_zones = [
-    "us-east-1a",
-    "us-east-1b",
-  ]
-  eks_node_ingress_cidrs = [
-    "10.10.0.0/16",
-  ]
-  tags = {
-    environment = "dev"
-    project     = "gitops-control-plane"
-  }
+  name       = var.name
+  cidr_block = var.cidr_block
+  public_subnet_cidrs    = var.public_subnet_cidrs
+  private_subnet_cidrs   = var.private_subnet_cidrs
+  availability_zones     = var.availability_zones
+  eks_node_ingress_cidrs = var.eks_node_ingress_cidrs
+  tags                   = local.tags
 }
 
 module "eks" {
   source                = "../../modules/eks"
-  name                  = "dev"
+  name                  = var.name
   vpc_id                = module.vpc.vpc_id
   subnet_ids            = module.vpc.private_subnet_ids
-  managed_node_group_defaults = {
-    additional_security_groups = [module.vpc.eks_node_security_group_id]
-  }
-  managed_node_groups = {
-    primary = {
-      desired_size   = 2
-      min_size       = 2
-      max_size       = 4
-      instance_types = ["t3.large"]
-      labels = {
-        role = "app"
-      }
-    }
-  }
-  tags = {
-    environment = "dev"
-    project     = "gitops-control-plane"
-  }
+  cluster_version       = var.cluster_version
+  managed_node_group_defaults = merge(
+    var.managed_node_group_defaults,
+    {
+      additional_security_groups = [module.vpc.eks_node_security_group_id]
+    },
+  )
+  managed_node_groups = var.managed_node_groups
+  tags                = local.tags
 }

@@ -58,6 +58,10 @@ terraform apply -var="bucket_name=gitops-devops-portfolio-tfstate" \
 
 After it exists, each environment configuration (e.g., `terraform/environments/dev`) uses the S3 backend block defined at the top of its `main.tf`. Adjust the bucket/key/table names if you deploy multiple copies of the project.
 
+## Terraform Reference
+
+See `docs/terraform.md` for a breakdown of module inputs/outputs and environment usage. Copy the `terraform.tfvars.example` files under each environment directory to `terraform.tfvars` and tailor values (CIDRs, AZs, node groups) before running `terraform apply`.
+
 ## Roadmap
 
 1. **Infrastructure bootstrap**: Define Terraform root module, set up remote state backend, and provision shared AWS resources.
